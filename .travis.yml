@@ -1,0 +1,33 @@
+# Arduino ile Continuous Integration Kullanımı
+# Bu dosyayı şekillendirerek kendi projenize Travis CI servisini entegre edebilirsiniz.
+# Bu yöntem PlatformIO servisinin altyapısını kullanmaktadır.
+#
+# Kerim Kaan Dönmez - http://kerimkaan.com/arduino-ile-ci/
+
+language: python
+python:
+    - "2.7"
+sudo: false
+cache:
+    directories:
+        - "~/.platformio"
+
+env:
+      # Build edilecek dosyaların listesi, her satıra bir dosya gelecek şekilde yapınız.
+    - PLATFORMIO_CI_SRC=Source.ino # Ana klasörünüzdeki Arduino INO dosyası
+    - PLATFORMIO_CI_SRC=Sub/SubSource.ino # Alt klasörlerdeki Arduino INO dosyasının yazımı
+    # - ...
+
+install:
+    - pip install -U platformio # Python ortamında platformio paketi indiriliyor
+
+    # Libraries from PlatformIO Library Registry:
+    #
+    # http://platformio.org/lib/show/19/DHT%20sensor%20library
+    # http://platformio.org/lib/show/4/IRremote
+
+    - platformio lib -g install 19 4 # Buraya yazacağınız numaralar platformio kütüphanesindeki Arduino kütüphanelerinin idsidir.
+
+script:
+      # Build edilecek boardların listesi, Ör: --board=uno Arduino UNO boardunu temsil etmektedir.
+    - platformio ci --board=uno  --board=leonardo --board=megaatmega2560 --board=megaatmega1280 --lib="." # Board değişkenleri
